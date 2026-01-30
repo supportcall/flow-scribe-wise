@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
-import { Workflow, Menu, X } from "lucide-react";
+import { Menu, X, Zap } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.png";
 
 const navItems = [
   { label: "Features", href: "/#features" },
@@ -18,9 +19,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="p-2 rounded-lg bg-primary/10 border border-primary/20 group-hover:border-primary/40 transition-colors">
-            <Workflow className="h-5 w-5 text-primary" />
-          </div>
+          <img src={logo} alt="SC-Workflow4AI" className="h-10 w-10" />
           <div className="flex flex-col">
             <span className="font-semibold text-foreground">SC-Workflow4AI</span>
             <span className="text-xs text-muted-foreground">v1.0</span>
@@ -48,7 +47,7 @@ export function Header() {
         <div className="hidden md:flex items-center gap-4">
           <Link to="/wizard">
             <Button variant="default" size="sm" className="gap-2">
-              <Workflow className="h-4 w-4" />
+              <Zap className="h-4 w-4" />
               Start Wizard
             </Button>
           </Link>
@@ -79,7 +78,7 @@ export function Header() {
             ))}
             <Link to="/wizard" onClick={() => setMobileMenuOpen(false)}>
               <Button variant="default" className="w-full gap-2">
-                <Workflow className="h-4 w-4" />
+                <Zap className="h-4 w-4" />
                 Start Wizard
               </Button>
             </Link>
