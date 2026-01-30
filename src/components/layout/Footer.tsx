@@ -1,5 +1,6 @@
-import { Workflow, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo.png";
 
 export function Footer() {
   return (
@@ -9,9 +10,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
-                <Workflow className="h-5 w-5 text-primary" />
-              </div>
+              <img src={logo} alt="SC-Workflow4AI" className="h-10 w-10" />
               <span className="font-semibold text-foreground">SC-Workflow4AI</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-sm">
