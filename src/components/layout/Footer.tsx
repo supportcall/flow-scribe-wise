@@ -85,9 +85,12 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="mt-12 pt-8 border-t border-border flex flex-col items-center gap-4 text-center">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} SC-Workflow4AI. All rights reserved.
+          </p>
+          <p className="text-xs text-muted-foreground/70 max-w-2xl">
+            SC-Workflow4AI is provided "as is" for informational purposes only. Consult with your ICT professional regarding network security. Use at your own risk.
           </p>
           <div className="flex items-center gap-2">
             <span className="freshness-badge fresh">
