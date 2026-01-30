@@ -4,25 +4,16 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
     const { email, password, fullName, secretKey } = await req.json();
-
-    // Verify bootstrap secret to prevent unauthorized admin creation
-    const expectedSecret = Deno.env.get("ADMIN_BOOTSTRAP_SECRET");
-    if (expectedSecret && secretKey !== expectedSecret) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized - invalid secret key" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -34,17 +25,37 @@ serve(async (req) => {
       },
     });
 
+    // Check if any admin exists
+    const { data: existingAdmins, error: checkError } = await supabaseAdmin
+      .from("user_roles")
+      .select("id")
+      .eq("role", "admin")
+      .limit(1);
+
+    const hasExistingAdmin = existingAdmins && existingAdmins.length > 0;
+
+    // If admin exists, require secret key for additional admin creation
+    if (hasExistingAdmin) {
+      const expectedSecret = Deno.env.get("ADMIN_BOOTSTRAP_SECRET");
+      if (!expectedSecret || secretKey !== expectedSecret) {
+        return new Response(
+          JSON.stringify({ error: "Unauthorized - admin already exists, secret required" }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
     // Check if user already exists
     const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
     const existingUser = existingUsers?.users?.find((u) => u.email === email);
 
     if (existingUser) {
-      // User exists, just ensure they have admin role and are approved
-      const { error: roleError } = await supabaseAdmin
+      // User exists, ensure they have admin role and are approved
+      await supabaseAdmin
         .from("user_roles")
         .upsert({ user_id: existingUser.id, role: "admin" }, { onConflict: "user_id,role" });
 
-      const { error: profileError } = await supabaseAdmin
+      await supabaseAdmin
         .from("profiles")
         .update({ approval_status: "approved" })
         .eq("user_id", existingUser.id);
@@ -75,6 +86,9 @@ serve(async (req) => {
     if (createError) {
       throw createError;
     }
+
+    // Wait a bit for the trigger to create the profile
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Assign admin role
     const { error: roleError } = await supabaseAdmin
