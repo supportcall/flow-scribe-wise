@@ -22,7 +22,7 @@ export function Header() {
           <img src={logo} alt="SC-Workflow4AI" className="h-10 w-10" />
           <div className="flex flex-col">
             <span className="font-semibold text-foreground">SC-Workflow4AI</span>
-            <span className="text-xs text-muted-foreground">v1.0</span>
+            <span className="text-xs text-muted-foreground">v2.7</span>
           </div>
         </Link>
 
