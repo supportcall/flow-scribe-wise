@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Zap, Shield, LogOut, Settings } from "lucide-react";
+import { Zap, Shield, LogOut, Settings, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/hooks/useAuth";
+import { CreditBalance } from "@/components/credits/CreditBalance";
+import { TransactionHistory } from "@/components/credits/TransactionHistory";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -69,6 +71,25 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* Credit Balance Card */}
+          <div className="card-feature p-6 mb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-lg bg-primary/10">
+                  <Coins className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Your Credit Balance</p>
+                  <CreditBalance showLabel size="md" />
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground">1 credit = $0.01</p>
+                <p className="text-xs text-muted-foreground">1 credit per workflow generation</p>
+              </div>
+            </div>
+          </div>
+
           {/* Quick Actions */}
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             <div className="card-feature p-6">
@@ -114,7 +135,7 @@ export default function Dashboard() {
           </div>
 
           {/* User Info */}
-          <div className="card-feature p-6">
+          <div className="card-feature p-6 mb-6">
             <h3 className="font-semibold text-foreground mb-4">Account Information</h3>
             <div className="grid sm:grid-cols-2 gap-4 text-sm">
               <div>
@@ -136,6 +157,12 @@ export default function Dashboard() {
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Transaction History */}
+          <div className="card-feature p-6">
+            <h3 className="font-semibold text-foreground mb-4">Recent Transactions</h3>
+            <TransactionHistory />
           </div>
         </div>
       </main>

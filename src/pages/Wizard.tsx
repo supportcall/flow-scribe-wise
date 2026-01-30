@@ -8,7 +8,9 @@ import {
   Zap,
   Shield,
   Bell,
-  Settings
+  Settings,
+  AlertCircle,
+  Coins
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,27 +25,31 @@ import {
 } from "@/components/ui/select";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { CreditBalance } from "@/components/credits/CreditBalance";
+import { useCredits } from "@/hooks/useCredits";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface WizardData {
-  // Step 1: Basics
   workflowName: string;
   description: string;
-  
-  // Step 2: Trigger
   triggerType: string;
   triggerDetails: string;
-  
-  // Step 3: Actions
   actions: string;
   integrations: string;
-  
-  // Step 4: Compliance
   complianceLevel: string;
   dataClassification: string;
   loggingLevel: string;
   alerting: string;
-  
-  // Step 5: Provider
   aiProvider: string;
   runtimeConstraints: string;
 }
@@ -71,10 +77,16 @@ const steps = [
   { id: 5, title: "Generate", icon: Bell },
 ];
 
+const COST_PER_USE = 1; // 1 credit = $0.01
+
 export default function Wizard() {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { balance, hasEnoughCredits, useCredit } = useCredits();
   const [currentStep, setCurrentStep] = useState(1);
   const [data, setData] = useState<WizardData>(initialData);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const updateData = (field: keyof WizardData, value: string) => {
     setData((prev) => ({ ...prev, [field]: value }));
@@ -92,9 +104,37 @@ export default function Wizard() {
     }
   };
 
-  const handleGenerate = () => {
+  const handleGenerateClick = () => {
+    if (!hasEnoughCredits(COST_PER_USE)) {
+      toast({
+        title: "Insufficient Credits",
+        description: "You need at least 1 credit to generate a workflow. Contact admin to add credits.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmGenerate = async () => {
+    setIsProcessing(true);
+    
+    const result = await useCredit(COST_PER_USE, `Workflow: ${data.workflowName}`);
+    
+    if (!result.success) {
+      toast({
+        title: "Error",
+        description: result.error || "Failed to process credits",
+        variant: "destructive",
+      });
+      setIsProcessing(false);
+      setShowConfirmDialog(false);
+      return;
+    }
+
     // Store data and navigate to generate page
     sessionStorage.setItem("wizardData", JSON.stringify(data));
+    setShowConfirmDialog(false);
     navigate("/generate");
   };
 
@@ -107,7 +147,7 @@ export default function Wizard() {
       case 3:
         return data.actions.trim().length > 0;
       case 4:
-        return true; // All have defaults
+        return true;
       case 5:
         return data.aiProvider.length > 0;
       default:
@@ -115,16 +155,45 @@ export default function Wizard() {
     }
   };
 
+  const canGenerate = isStepValid() && hasEnoughCredits(COST_PER_USE);
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
       <main className="flex-1 py-8 lg:py-12">
         <div className="container max-w-4xl">
+          {/* Credit Balance Banner */}
+          <div className="mb-6 flex items-center justify-between p-4 rounded-lg border border-border bg-card">
+            <div className="flex items-center gap-3">
+              <Coins className="h-5 w-5 text-primary" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Your Balance</p>
+                <CreditBalance showLabel size="md" />
+              </div>
+            </div>
+            <div className="text-right text-sm">
+              <p className="text-muted-foreground">Cost per generation</p>
+              <p className="font-semibold text-foreground">1 credit ($0.01)</p>
+            </div>
+          </div>
+
+          {/* Insufficient Credits Warning */}
+          {!hasEnoughCredits(COST_PER_USE) && (
+            <div className="mb-6 p-4 rounded-lg border border-destructive/50 bg-destructive/10 flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
+              <div>
+                <p className="font-medium text-destructive">Insufficient Credits</p>
+                <p className="text-sm text-muted-foreground">
+                  You need at least 1 credit to generate a workflow. Contact your administrator to add credits.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Progress Steps */}
           <div className="mb-12">
             <div className="flex items-center justify-between relative">
-              {/* Progress Line */}
               <div className="absolute top-4 left-0 right-0 h-0.5 bg-border">
                 <div 
                   className="h-full bg-primary transition-all duration-500"
@@ -132,7 +201,6 @@ export default function Wizard() {
                 />
               </div>
 
-              {/* Step Indicators */}
               {steps.map((step) => {
                 const Icon = step.icon;
                 const isActive = currentStep === step.id;
@@ -226,7 +294,7 @@ export default function Wizard() {
                     <Label htmlFor="triggerDetails">Trigger Details</Label>
                     <Textarea
                       id="triggerDetails"
-                      placeholder="Provide additional details about the trigger (e.g., expected payload, schedule pattern, filters)..."
+                      placeholder="Provide additional details about the trigger..."
                       value={data.triggerDetails}
                       onChange={(e) => updateData("triggerDetails", e.target.value)}
                       rows={3}
@@ -248,12 +316,7 @@ export default function Wizard() {
                     <Label htmlFor="actions">Actions to Perform *</Label>
                     <Textarea
                       id="actions"
-                      placeholder="Describe the step-by-step actions:
-1. Validate incoming data
-2. Transform data to required format
-3. Send to external API
-4. Store results in database
-5. Send notification on completion"
+                      placeholder="Describe the step-by-step actions..."
                       value={data.actions}
                       onChange={(e) => updateData("actions", e.target.value)}
                       rows={6}
@@ -264,7 +327,7 @@ export default function Wizard() {
                     <Label htmlFor="integrations">External Integrations</Label>
                     <Textarea
                       id="integrations"
-                      placeholder="List the external services to integrate (e.g., Slack, Airtable, Stripe, SendGrid, custom APIs)..."
+                      placeholder="List the external services to integrate..."
                       value={data.integrations}
                       onChange={(e) => updateData("integrations", e.target.value)}
                       rows={3}
@@ -378,7 +441,6 @@ export default function Wizard() {
                     </Select>
                   </div>
 
-                  {/* Summary Preview */}
                   <div className="mt-6 p-4 rounded-lg bg-muted/30 border border-border">
                     <h3 className="font-semibold text-foreground mb-3">Generation Summary</h3>
                     <dl className="grid grid-cols-2 gap-2 text-sm">
@@ -390,6 +452,8 @@ export default function Wizard() {
                       <dd className="text-foreground capitalize">{data.complianceLevel}</dd>
                       <dt className="text-muted-foreground">Provider:</dt>
                       <dd className="text-foreground capitalize">{data.aiProvider}</dd>
+                      <dt className="text-muted-foreground">Cost:</dt>
+                      <dd className="text-foreground font-semibold">1 credit ($0.01)</dd>
                     </dl>
                   </div>
                 </div>
@@ -420,12 +484,12 @@ export default function Wizard() {
               </Button>
             ) : (
               <Button
-                onClick={handleGenerate}
-                disabled={!isStepValid()}
+                onClick={handleGenerateClick}
+                disabled={!canGenerate}
                 className="gap-2 glow-border-strong"
               >
                 <Workflow className="h-4 w-4" />
-                Generate Workflow
+                Generate Workflow (1 credit)
               </Button>
             )}
           </div>
@@ -433,6 +497,28 @@ export default function Wizard() {
       </main>
 
       <Footer />
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Generation</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will use <span className="font-semibold">1 credit ($0.01)</span> from your balance.
+              <br /><br />
+              Your current balance: <span className="font-semibold">{balance} credits</span>
+              <br />
+              Balance after: <span className="font-semibold">{balance - 1} credits</span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isProcessing}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmGenerate} disabled={isProcessing}>
+              {isProcessing ? "Processing..." : "Confirm & Generate"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

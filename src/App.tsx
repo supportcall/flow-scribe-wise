@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { CreditsProvider } from "@/hooks/useCredits";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Wizard from "./pages/Wizard";
 import Generate from "./pages/Generate";
@@ -23,18 +25,48 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/wizard" element={<Wizard />} />
-            <Route path="/generate" element={<Generate />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/pending-approval" element={<PendingApproval />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/admin" element={<Admin />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <CreditsProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route
+                path="/wizard"
+                element={
+                  <ProtectedRoute requireApproval>
+                    <Wizard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/generate"
+                element={
+                  <ProtectedRoute requireApproval>
+                    <Generate />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/pending-approval" element={<PendingApproval />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute requireApproval>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute requireApproval requireAdmin>
+                    <Admin />
+                  </ProtectedRoute>
+                }
+              />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </CreditsProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
