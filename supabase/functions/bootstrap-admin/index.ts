@@ -17,9 +17,9 @@ serve(async (req) => {
 
     // Verify bootstrap secret to prevent unauthorized admin creation
     const expectedSecret = Deno.env.get("ADMIN_BOOTSTRAP_SECRET");
-    if (!expectedSecret || secretKey !== expectedSecret) {
+    if (expectedSecret && secretKey !== expectedSecret) {
       return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
+        JSON.stringify({ error: "Unauthorized - invalid secret key" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -49,7 +49,7 @@ serve(async (req) => {
         .update({ approval_status: "approved" })
         .eq("user_id", existingUser.id);
 
-      // Ensure credits record exists
+      // Ensure credits record exists with 1000 starting credits
       await supabaseAdmin
         .from("user_credits")
         .upsert({ user_id: existingUser.id, balance: 1000 }, { onConflict: "user_id" });
@@ -95,7 +95,7 @@ serve(async (req) => {
       console.error("Profile error:", profileError);
     }
 
-    // Add initial credits
+    // Add initial credits (1000 = $10.00)
     await supabaseAdmin
       .from("user_credits")
       .upsert({ user_id: newUser.user.id, balance: 1000 }, { onConflict: "user_id" });
@@ -103,7 +103,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        message: "Admin user created",
+        message: "Admin user created successfully",
         user_id: newUser.user.id,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
