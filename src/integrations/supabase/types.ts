@@ -134,11 +134,27 @@ export type Database = {
         Args: { _amount: number; _description?: string; _user_id: string }
         Returns: number
       }
+      deduct_credits: {
+        Args: { _amount: number; _description?: string; _user_id: string }
+        Returns: number
+      }
       get_my_approval_status: {
         Args: never
         Returns: Database["public"]["Enums"]["approval_status"]
       }
       get_my_credits: { Args: never; Returns: number }
+      get_user_transactions: {
+        Args: { _user_id: string }
+        Returns: {
+          amount: number
+          balance_after: number
+          created_at: string
+          created_by: string
+          description: string
+          id: string
+          transaction_type: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
