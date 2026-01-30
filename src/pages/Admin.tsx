@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Shield, Check, X, Loader2, ArrowLeft, RefreshCw, Users } from "lucide-react";
+import { Shield, Check, X, Loader2, ArrowLeft, RefreshCw, Users, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { AdminCreditsManager } from "@/components/admin/AdminCreditsManager";
 
 interface PendingUser {
   id: string;
@@ -70,7 +72,6 @@ export default function Admin() {
   const handleApprove = async (profile: PendingUser) => {
     setProcessingId(profile.id);
 
-    // Update approval status
     const { error: updateError } = await supabase
       .from("profiles")
       .update({ approval_status: "approved" })
@@ -86,7 +87,6 @@ export default function Admin() {
       return;
     }
 
-    // Assign 'user' role
     const { error: roleError } = await supabase
       .from("user_roles")
       .insert({ user_id: profile.user_id, role: "user" });
@@ -155,7 +155,7 @@ export default function Admin() {
                   <Shield className="h-6 w-6 text-primary" />
                   <h1 className="text-2xl font-bold text-foreground">Admin Panel</h1>
                 </div>
-                <p className="text-muted-foreground">Manage user approvals</p>
+                <p className="text-muted-foreground">Manage users and credits</p>
               </div>
             </div>
             <Button variant="outline" size="sm" onClick={fetchUsers} className="gap-2">
@@ -182,120 +182,151 @@ export default function Admin() {
             </div>
           </div>
 
-          {/* Pending Users */}
-          <div className="card-feature p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <Users className="h-5 w-5 text-muted-foreground" />
-              <h2 className="text-lg font-semibold text-foreground">Pending Approvals</h2>
-            </div>
+          {/* Tabs */}
+          <Tabs defaultValue="approvals" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="approvals" className="gap-2">
+                <Users className="h-4 w-4" />
+                User Approvals
+              </TabsTrigger>
+              <TabsTrigger value="credits" className="gap-2">
+                <Coins className="h-4 w-4" />
+                Manage Credits
+              </TabsTrigger>
+            </TabsList>
 
-            {isLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-              </div>
-            ) : pendingUsers.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                No pending approval requests.
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {pendingUsers.map((profile) => (
-                  <div
-                    key={profile.id}
-                    className="flex items-center justify-between p-4 border border-border rounded-lg bg-background"
-                  >
-                    <div>
-                      <p className="font-medium text-foreground">
-                        {profile.full_name || "No name"}
-                      </p>
-                      <p className="text-sm text-muted-foreground">{profile.email}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Registered: {new Date(profile.created_at).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="gap-1 text-destructive hover:text-destructive"
-                        onClick={() => handleReject(profile)}
-                        disabled={processingId === profile.id}
-                      >
-                        {processingId === profile.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <X className="h-4 w-4" />
-                        )}
-                        Reject
-                      </Button>
-                      <Button
-                        size="sm"
-                        className="gap-1"
-                        onClick={() => handleApprove(profile)}
-                        disabled={processingId === profile.id}
-                      >
-                        {processingId === profile.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Check className="h-4 w-4" />
-                        )}
-                        Approve
-                      </Button>
-                    </div>
+            {/* Approvals Tab */}
+            <TabsContent value="approvals" className="space-y-6">
+              {/* Pending Users */}
+              <div className="card-feature p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <Users className="h-5 w-5 text-muted-foreground" />
+                  <h2 className="text-lg font-semibold text-foreground">Pending Approvals</h2>
+                </div>
+
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* All Users */}
-          <div className="card-feature p-6 mt-6">
-            <h2 className="text-lg font-semibold text-foreground mb-4">All Users</h2>
-            {isLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left py-3 px-2 text-muted-foreground font-medium">Name</th>
-                      <th className="text-left py-3 px-2 text-muted-foreground font-medium">Email</th>
-                      <th className="text-left py-3 px-2 text-muted-foreground font-medium">Status</th>
-                      <th className="text-left py-3 px-2 text-muted-foreground font-medium">Registered</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {allUsers.map((profile) => (
-                      <tr key={profile.id} className="border-b border-border/50">
-                        <td className="py-3 px-2 text-foreground">
-                          {profile.full_name || "—"}
-                        </td>
-                        <td className="py-3 px-2 text-foreground">{profile.email}</td>
-                        <td className="py-3 px-2">
-                          <span
-                            className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                              profile.approval_status === "approved"
-                                ? "bg-success/10 text-success"
-                                : profile.approval_status === "pending"
-                                ? "bg-warning/10 text-warning"
-                                : "bg-destructive/10 text-destructive"
-                            }`}
+                ) : pendingUsers.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    No pending approval requests.
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {pendingUsers.map((profile) => (
+                      <div
+                        key={profile.id}
+                        className="flex items-center justify-between p-4 border border-border rounded-lg bg-background"
+                      >
+                        <div>
+                          <p className="font-medium text-foreground">
+                            {profile.full_name || "No name"}
+                          </p>
+                          <p className="text-sm text-muted-foreground">{profile.email}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Registered: {new Date(profile.created_at).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="gap-1 text-destructive hover:text-destructive"
+                            onClick={() => handleReject(profile)}
+                            disabled={processingId === profile.id}
                           >
-                            {profile.approval_status}
-                          </span>
-                        </td>
-                        <td className="py-3 px-2 text-muted-foreground">
-                          {new Date(profile.created_at).toLocaleDateString()}
-                        </td>
-                      </tr>
+                            {processingId === profile.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <X className="h-4 w-4" />
+                            )}
+                            Reject
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="gap-1"
+                            onClick={() => handleApprove(profile)}
+                            disabled={processingId === profile.id}
+                          >
+                            {processingId === profile.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Check className="h-4 w-4" />
+                            )}
+                            Approve
+                          </Button>
+                        </div>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+
+              {/* All Users Table */}
+              <div className="card-feature p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4">All Users</h2>
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border">
+                          <th className="text-left py-3 px-2 text-muted-foreground font-medium">Name</th>
+                          <th className="text-left py-3 px-2 text-muted-foreground font-medium">Email</th>
+                          <th className="text-left py-3 px-2 text-muted-foreground font-medium">Status</th>
+                          <th className="text-left py-3 px-2 text-muted-foreground font-medium">Registered</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allUsers.map((profile) => (
+                          <tr key={profile.id} className="border-b border-border/50">
+                            <td className="py-3 px-2 text-foreground">
+                              {profile.full_name || "—"}
+                            </td>
+                            <td className="py-3 px-2 text-foreground">{profile.email}</td>
+                            <td className="py-3 px-2">
+                              <span
+                                className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                                  profile.approval_status === "approved"
+                                    ? "bg-success/10 text-success"
+                                    : profile.approval_status === "pending"
+                                    ? "bg-warning/10 text-warning"
+                                    : "bg-destructive/10 text-destructive"
+                                }`}
+                              >
+                                {profile.approval_status}
+                              </span>
+                            </td>
+                            <td className="py-3 px-2 text-muted-foreground">
+                              {new Date(profile.created_at).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            {/* Credits Tab */}
+            <TabsContent value="credits">
+              <div className="card-feature p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <Coins className="h-5 w-5 text-muted-foreground" />
+                  <h2 className="text-lg font-semibold text-foreground">Manage User Credits</h2>
+                </div>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Select a user and add credits to their account. 1 credit = $0.01 per wizard use.
+                </p>
+                <AdminCreditsManager users={allUsers} onRefresh={fetchUsers} />
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 
