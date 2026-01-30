@@ -20,24 +20,49 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Quick Links */}
+          {/* SupportCALL */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
+            <h4 className="font-semibold text-foreground mb-4">SupportCALL</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/#features" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Features
-                </Link>
+                <a 
+                  href="https://sc-cloaked.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                >
+                  SC-Cloaked <ExternalLink className="h-3 w-3" />
+                </a>
               </li>
               <li>
-                <Link to="/#how-it-works" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  How It Works
-                </Link>
+                <a 
+                  href="https://sc-uscs.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                >
+                  SC-USCS <ExternalLink className="h-3 w-3" />
+                </a>
               </li>
               <li>
-                <Link to="/wizard" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Generate Workflow
-                </Link>
+                <a 
+                  href="https://wanip.io/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                >
+                  WAN IP <ExternalLink className="h-3 w-3" />
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://offsitesync.co.za/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                >
+                  SysAdmin AI <ExternalLink className="h-3 w-3" />
+                </a>
               </li>
             </ul>
           </div>
@@ -54,16 +79,6 @@ export function Footer() {
                   className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
                 >
                   n8n Docs <ExternalLink className="h-3 w-3" />
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://nodered.org/docs/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
-                >
-                  Node-RED Docs <ExternalLink className="h-3 w-3" />
                 </a>
               </li>
             </ul>
