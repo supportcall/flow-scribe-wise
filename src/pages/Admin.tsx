@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Shield, Check, X, Loader2, ArrowLeft, RefreshCw, Users, Coins } from "lucide-react";
+import { Shield, Check, X, Loader2, ArrowLeft, RefreshCw, Users, Coins, UserCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/layout/Header";
@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminCreditsManager } from "@/components/admin/AdminCreditsManager";
+import { AdminUserManager } from "@/components/admin/AdminUserManager";
 
 interface PendingUser {
   id: string;
@@ -183,17 +184,35 @@ export default function Admin() {
           </div>
 
           {/* Tabs */}
-          <Tabs defaultValue="approvals" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2">
+          <Tabs defaultValue="users" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="users" className="gap-2">
+                <UserCog className="h-4 w-4" />
+                User Management
+              </TabsTrigger>
               <TabsTrigger value="approvals" className="gap-2">
                 <Users className="h-4 w-4" />
-                User Approvals
+                Approvals
               </TabsTrigger>
               <TabsTrigger value="credits" className="gap-2">
                 <Coins className="h-4 w-4" />
-                Manage Credits
+                Credits
               </TabsTrigger>
             </TabsList>
+
+            {/* User Management Tab */}
+            <TabsContent value="users">
+              <div className="card-feature p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <UserCog className="h-5 w-5 text-muted-foreground" />
+                  <h2 className="text-lg font-semibold text-foreground">User Management</h2>
+                </div>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Edit profiles, manage passwords, disable/enable accounts, and delete users.
+                </p>
+                <AdminUserManager onRefresh={fetchUsers} />
+              </div>
+            </TabsContent>
 
             {/* Approvals Tab */}
             <TabsContent value="approvals" className="space-y-6">
