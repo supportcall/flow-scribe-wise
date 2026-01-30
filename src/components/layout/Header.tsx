@@ -8,6 +8,7 @@ const navItems = [
   { label: "Features", href: "/#features" },
   { label: "How It Works", href: "/#how-it-works" },
   { label: "Generate", href: "/wizard" },
+  { label: "Login", href: "/login" },
 ];
 
 export function Header() {
