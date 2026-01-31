@@ -25,6 +25,26 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <a 
+                  href="https://www.supportcall.com.au/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                >
+                  Australia <ExternalLink className="h-3 w-3" />
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://www.supportcall.co.za/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                >
+                  South Africa <ExternalLink className="h-3 w-3" />
+                </a>
+              </li>
+              <li>
+                <a 
                   href="https://sc-cloaked.com/" 
                   target="_blank" 
                   rel="noopener noreferrer"
