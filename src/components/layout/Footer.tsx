@@ -51,6 +51,16 @@ export function Footer() {
                   className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
                 >
                   Workflow4AI <ExternalLink className="h-3 w-3" />
+              </a>
+              </li>
+              <li>
+                <a 
+                  href="https://sysadmin-ai.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                >
+                  SysAdmin AI <ExternalLink className="h-3 w-3" />
                 </a>
               </li>
               <li>
