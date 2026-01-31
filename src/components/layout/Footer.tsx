@@ -55,6 +55,16 @@ export function Footer() {
               </li>
               <li>
                 <a 
+                  href="https://sc-uscs.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                >
+                  SC-USCS <ExternalLink className="h-3 w-3" />
+                </a>
+              </li>
+              <li>
+                <a 
                   href="https://sc-cloaked.com/" 
                   target="_blank" 
                   rel="noopener noreferrer"
