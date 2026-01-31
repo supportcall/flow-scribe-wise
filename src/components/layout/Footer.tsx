@@ -85,22 +85,22 @@ export function Footer() {
               </li>
               <li>
                 <a 
-                  href="https://seniormail.co.za/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
-                >
-                  SeniorMail <ExternalLink className="h-3 w-3" />
-                </a>
-              </li>
-              <li>
-                <a 
                   href="https://sc-useo.com/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
                 >
                   SC-USEO <ExternalLink className="h-3 w-3" />
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://seniormail.co.za/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                >
+                  SeniorMail <ExternalLink className="h-3 w-3" />
                 </a>
               </li>
               <li>
