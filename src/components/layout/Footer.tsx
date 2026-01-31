@@ -45,6 +45,16 @@ export function Footer() {
               </li>
               <li>
                 <a 
+                  href="https://workflow4ai.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                >
+                  Workflow4AI <ExternalLink className="h-3 w-3" />
+                </a>
+              </li>
+              <li>
+                <a 
                   href="https://sc-cloaked.com/" 
                   target="_blank" 
                   rel="noopener noreferrer"
@@ -55,32 +65,42 @@ export function Footer() {
               </li>
               <li>
                 <a 
-                  href="https://sc-uscs.com/" 
+                  href="https://seniormail.co.za/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
                 >
-                  SC-USCS <ExternalLink className="h-3 w-3" />
+                  SeniorMail <ExternalLink className="h-3 w-3" />
                 </a>
               </li>
               <li>
                 <a 
-                  href="https://wanip.io/" 
+                  href="https://sc-useo.com/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
                 >
-                  WAN IP <ExternalLink className="h-3 w-3" />
+                  SC-USEO <ExternalLink className="h-3 w-3" />
                 </a>
               </li>
               <li>
                 <a 
-                  href="https://offsitesync.co.za/" 
+                  href="https://rehab-source.com/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
                 >
-                  SysAdmin AI <ExternalLink className="h-3 w-3" />
+                  Rehab-Source <ExternalLink className="h-3 w-3" />
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://immiassist2au.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                >
+                  ImmiAssist2AU <ExternalLink className="h-3 w-3" />
                 </a>
               </li>
             </ul>
