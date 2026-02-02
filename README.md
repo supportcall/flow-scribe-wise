@@ -1,73 +1,39 @@
-# Welcome to your Lovable project
+# SC-Workflow4AI v2.7
 
-## Project info
+A portal for generating production-grade, import-ready **n8n** and **Node-RED** workflows using AI, based on the SC-AUTOMATION-SPEC v1 canonical format.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## What is this?
 
-## How can I edit this code?
+SC-Workflow4AI helps you create professional automation workflows without writing code. Simply describe what you want to automate in plain English, and the AI generates ready-to-import workflow files for n8n or Node-RED.
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+- **Guided Wizard** — Step-by-step workflow builder with helpful examples
+- **Multiple AI Providers** — Choose from Gemini, OpenAI, Claude, or Qwen
+- **Production-Ready Output** — Workflows include error handling, logging, and security
+- **Compliance Options** — Standard, Strict, or Regulated (HIPAA/SOC2) modes
+- **Credit-Based Usage** — Simple pay-per-use at $0.01 per generation
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+1. Visit the app and create an account
+2. Wait for admin approval (required for new accounts)
+3. Once approved, click "Start Wizard" to create your first workflow
+4. Follow the 5-step wizard: Basics → Trigger → Actions → Compliance → Generate
+5. Download your workflow and import it into n8n or Node-RED
 
-**Use your preferred IDE**
+## Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- React + TypeScript + Vite
+- Tailwind CSS + shadcn/ui
+- Supabase (Auth, Database, Edge Functions)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Links
 
-Follow these steps:
+- **Live App**: [flow-scribe-wise.lovable.app](https://flow-scribe-wise.lovable.app)
+- **n8n Docs**: [docs.n8n.io](https://docs.n8n.io)
+- **Node-RED Docs**: [nodered.org/docs](https://nodered.org/docs)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+© SupportCALL Pty Ltd
