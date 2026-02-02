@@ -236,15 +236,16 @@ export default function Wizard() {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground mb-2">Workflow Basics</h2>
-                  <p className="text-muted-foreground">Name and describe your automation workflow.</p>
+                  <p className="text-muted-foreground">Give your automation a clear name and explain what you want it to do.</p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="workflowName">Workflow Name *</Label>
+                    <p className="text-xs text-muted-foreground">A short, memorable name for your automation</p>
                     <Input
                       id="workflowName"
-                      placeholder="e.g., Order Processing Pipeline"
+                      placeholder="e.g., New Customer Welcome Email, Daily Sales Report, Invoice Generator"
                       value={data.workflowName}
                       onChange={(e) => updateData("workflowName", e.target.value)}
                       className="input-glow"
@@ -253,9 +254,10 @@ export default function Wizard() {
 
                   <div className="space-y-2">
                     <Label htmlFor="description">Description</Label>
+                    <p className="text-xs text-muted-foreground">Explain the goal in plain English — what should happen and why?</p>
                     <Textarea
                       id="description"
-                      placeholder="Describe what this workflow does, its purpose, and key requirements..."
+                      placeholder="Example: When a new customer signs up on our website, automatically send them a welcome email with their login details and a link to our getting started guide. Also add them to our CRM system and notify the sales team via Slack."
                       value={data.description}
                       onChange={(e) => updateData("description", e.target.value)}
                       rows={4}
@@ -269,35 +271,41 @@ export default function Wizard() {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground mb-2">Trigger Configuration</h2>
-                  <p className="text-muted-foreground">Define how your workflow will be triggered.</p>
+                  <p className="text-muted-foreground">Choose what starts your automation — an event, a schedule, or a manual button click.</p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="triggerType">Trigger Type *</Label>
+                    <p className="text-xs text-muted-foreground">What event should start this workflow?</p>
                     <Select value={data.triggerType} onValueChange={(v) => updateData("triggerType", v)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select trigger type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="webhook">Webhook</SelectItem>
-                        <SelectItem value="schedule">Schedule (Cron)</SelectItem>
-                        <SelectItem value="manual">Manual Trigger</SelectItem>
-                        <SelectItem value="email">Email Received</SelectItem>
-                        <SelectItem value="database">Database Change</SelectItem>
-                        <SelectItem value="file">File Upload</SelectItem>
+                        <SelectItem value="webhook">Webhook — Another app sends data to trigger it</SelectItem>
+                        <SelectItem value="schedule">Schedule — Runs automatically at set times (e.g., daily at 9am)</SelectItem>
+                        <SelectItem value="manual">Manual — You click a button to run it</SelectItem>
+                        <SelectItem value="email">Email Received — Runs when an email arrives</SelectItem>
+                        <SelectItem value="database">Database Change — Runs when data is added/updated</SelectItem>
+                        <SelectItem value="file">File Upload — Runs when a file is uploaded</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="triggerDetails">Trigger Details</Label>
+                    <p className="text-xs text-muted-foreground">Any specific timing, conditions, or sources? (optional)</p>
                     <Textarea
                       id="triggerDetails"
-                      placeholder="Provide additional details about the trigger..."
+                      placeholder="Examples:
+• Schedule: Every weekday at 8:00 AM Sydney time
+• Webhook: From Shopify when a new order is placed
+• Email: When I receive an email from suppliers@company.com
+• Database: When a new row is added to the 'orders' table"
                       value={data.triggerDetails}
                       onChange={(e) => updateData("triggerDetails", e.target.value)}
-                      rows={3}
+                      rows={4}
                     />
                   </div>
                 </div>
@@ -308,26 +316,34 @@ export default function Wizard() {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground mb-2">Actions & Integrations</h2>
-                  <p className="text-muted-foreground">Describe the actions and services your workflow will use.</p>
+                  <p className="text-muted-foreground">List what your automation should do, step by step, and which apps/services it needs to connect to.</p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="actions">Actions to Perform *</Label>
+                    <p className="text-xs text-muted-foreground">Describe each step in plain English — what should happen in order?</p>
                     <Textarea
                       id="actions"
-                      placeholder="Describe the step-by-step actions..."
+                      placeholder="Example steps:
+1. Get the customer's name and email from the incoming data
+2. Look up their purchase history in our database
+3. Generate a personalized thank-you message
+4. Send an email to the customer
+5. Log the interaction in our CRM
+6. Post a summary to the #sales Slack channel"
                       value={data.actions}
                       onChange={(e) => updateData("actions", e.target.value)}
-                      rows={6}
+                      rows={7}
                     />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="integrations">External Integrations</Label>
+                    <p className="text-xs text-muted-foreground">Which apps or services does this workflow need to connect to?</p>
                     <Textarea
                       id="integrations"
-                      placeholder="List the external services to integrate..."
+                      placeholder="Examples: Gmail, Slack, Shopify, Google Sheets, Salesforce, Stripe, Notion, Airtable, HubSpot, Mailchimp, Twilio (SMS), Microsoft Teams, Trello, Asana"
                       value={data.integrations}
                       onChange={(e) => updateData("integrations", e.target.value)}
                       rows={3}
@@ -341,61 +357,65 @@ export default function Wizard() {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground mb-2">Compliance & Logging</h2>
-                  <p className="text-muted-foreground">Configure security and monitoring settings.</p>
+                  <p className="text-muted-foreground">Choose how strictly to handle data security and what to track. Not sure? The defaults work well for most cases.</p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Compliance Level</Label>
+                    <p className="text-xs text-muted-foreground">How strict should security checks be?</p>
                     <Select value={data.complianceLevel} onValueChange={(v) => updateData("complianceLevel", v)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="standard">Standard</SelectItem>
-                        <SelectItem value="strict">Strict</SelectItem>
-                        <SelectItem value="regulated">Regulated (HIPAA/SOC2)</SelectItem>
+                        <SelectItem value="standard">Standard — Good for most business use</SelectItem>
+                        <SelectItem value="strict">Strict — Extra validation and error handling</SelectItem>
+                        <SelectItem value="regulated">Regulated — For healthcare, finance (HIPAA/SOC2)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
                     <Label>Data Classification</Label>
+                    <p className="text-xs text-muted-foreground">How sensitive is the data being processed?</p>
                     <Select value={data.dataClassification} onValueChange={(v) => updateData("dataClassification", v)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="public">Public</SelectItem>
-                        <SelectItem value="internal">Internal</SelectItem>
-                        <SelectItem value="confidential">Confidential</SelectItem>
+                        <SelectItem value="public">Public — Non-sensitive, can be shared openly</SelectItem>
+                        <SelectItem value="internal">Internal — Business data, not for public</SelectItem>
+                        <SelectItem value="confidential">Confidential — Personal info, passwords, financial</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
                     <Label>Logging Level</Label>
+                    <p className="text-xs text-muted-foreground">How much detail to record for troubleshooting?</p>
                     <Select value={data.loggingLevel} onValueChange={(v) => updateData("loggingLevel", v)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="minimal">Minimal</SelectItem>
-                        <SelectItem value="standard">Standard</SelectItem>
-                        <SelectItem value="audit">Audit (Full)</SelectItem>
+                        <SelectItem value="minimal">Minimal — Errors only, less storage</SelectItem>
+                        <SelectItem value="standard">Standard — Key events and errors</SelectItem>
+                        <SelectItem value="audit">Audit — Full trace of every step (debugging)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
                     <Label>Alerting</Label>
+                    <p className="text-xs text-muted-foreground">When should you be notified?</p>
                     <Select value={data.alerting} onValueChange={(v) => updateData("alerting", v)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="failures">Failures Only</SelectItem>
-                        <SelectItem value="daily">Failures + Daily Summary</SelectItem>
+                        <SelectItem value="failures">Failures Only — Alert when something breaks</SelectItem>
+                        <SelectItem value="daily">Daily Summary — Daily report + failure alerts</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -407,36 +427,38 @@ export default function Wizard() {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground mb-2">Generation Settings</h2>
-                  <p className="text-muted-foreground">Choose your AI provider and runtime preferences.</p>
+                  <p className="text-muted-foreground">Pick which AI creates your workflow and how it should be optimized. Gemini + Balanced works great for most users.</p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label>AI Provider *</Label>
+                    <p className="text-xs text-muted-foreground">Which AI engine should generate your workflow code?</p>
                     <Select value={data.aiProvider} onValueChange={(v) => updateData("aiProvider", v)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="gemini">Google Gemini</SelectItem>
-                        <SelectItem value="openai">OpenAI</SelectItem>
-                        <SelectItem value="anthropic">Anthropic Claude</SelectItem>
-                        <SelectItem value="qwen">Qwen</SelectItem>
+                        <SelectItem value="gemini">Google Gemini — Fast, reliable, great all-rounder</SelectItem>
+                        <SelectItem value="openai">OpenAI GPT — Excellent for complex logic</SelectItem>
+                        <SelectItem value="anthropic">Anthropic Claude — Strong on accuracy and safety</SelectItem>
+                        <SelectItem value="qwen">Qwen — Good for multilingual workflows</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
                     <Label>Runtime Constraints</Label>
+                    <p className="text-xs text-muted-foreground">What matters most when this workflow runs?</p>
                     <Select value={data.runtimeConstraints} onValueChange={(v) => updateData("runtimeConstraints", v)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="low-latency">Low Latency</SelectItem>
-                        <SelectItem value="high-throughput">High Throughput</SelectItem>
-                        <SelectItem value="low-cost">Low Cost</SelectItem>
-                        <SelectItem value="balanced">Balanced</SelectItem>
+                        <SelectItem value="low-latency">Low Latency — Fastest response time</SelectItem>
+                        <SelectItem value="high-throughput">High Throughput — Handle many requests at once</SelectItem>
+                        <SelectItem value="low-cost">Low Cost — Minimize running expenses</SelectItem>
+                        <SelectItem value="balanced">Balanced — Good mix of speed, volume, and cost</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
